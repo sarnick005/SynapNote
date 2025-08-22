@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String // hashed
+  createdAt DateTime @default(now())
+  notes     Note[]
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  link      String?
+  aiSummary String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  preview      Preview?
+  relatedNotes Note[]   @relation("NoteRelations")
+
+  shareId  String? @unique
+  isPublic Boolean @default(false)
+
+  Note Note[] @relation("NoteRelations")
+}
+
+model Preview {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  url         String
+
+  noteId String @unique
+  note   Note   @relation(fields: [noteId], references: [id])
+}
