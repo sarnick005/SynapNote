@@ -1,14 +1,13 @@
-// store/useNotesStore.ts
 import { create } from "zustand";
 import axios from "axios";
 import { useAuthStore } from "./useAuthStore";
 
 export type Note = {
-  aiSummary: any;
   id: string;
   title: string;
   content: string;
   link?: string | null;
+  aiSummary?: string; 
   createdAt: string;
 };
 
@@ -17,9 +16,10 @@ type NotesState = {
   loading: boolean;
   getNotes: () => Promise<void>;
   addNote: (note: Note) => void;
+  clearNotes: () => void;
 };
 
-export const useNotesStore = create<NotesState>((set) => ({
+export const useNotesStore = create<NotesState>((set, get) => ({
   notes: [],
   loading: false,
 
@@ -29,13 +29,18 @@ export const useNotesStore = create<NotesState>((set) => ({
 
     set({ loading: true });
     try {
-      const res = await axios.get(`/api/profile/notes/${user.id}`);
-      set({ notes: res.data, loading: false });
+      const res = await axios.get<Note[]>(`/api/profile/notes/${user.id}`);
+      set({ notes: res.data });
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch notes:", err);
+    } finally {
       set({ loading: false });
     }
   },
 
-  addNote: (note) => set((state) => ({ notes: [note, ...state.notes] })),
+  addNote: (note: Note) => {
+    set((state) => ({ notes: [note, ...state.notes] }));
+  },
+
+  clearNotes: () => set({ notes: [] }),
 }));

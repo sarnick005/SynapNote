@@ -10,15 +10,15 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNewNotesModalStore } from "@/store/useModalStore";
 import { useNotesStore } from "@/store/useNotesStore";
 import ChatPanel from "@/components/ChatPanel";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
-  const { user, isLoggedIn, loading } = useAuthStore();
+  const { user, isLoggedIn, loading, logout } = useAuthStore();
   const { open } = useNewNotesModalStore();
   const { notes, loading: notesLoading, getNotes } = useNotesStore();
 
@@ -31,20 +31,22 @@ export default function ProfilePage() {
   >({});
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
     if (user?.id) getNotes();
   }, [user?.id, getNotes]);
 
   if (loading) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 p-6">
         <Skeleton className="h-6 w-[120px]" />
         <Skeleton className="h-6 w-[200px]" />
       </div>
     );
   }
 
-  if (!isLoggedIn || !user) return <h1>Not authorized</h1>;
+  if (!isLoggedIn || !user) return <h1 className="p-6">Not authorized</h1>;
 
   const handleAISummary = async (id: string) => {
     try {
@@ -67,18 +69,26 @@ export default function ProfilePage() {
     setVisibleSummaries((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const handleLogout = () => {
+    logout();
+    router.push("/signin");
+  };
+
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Hey {user.name}</h1>
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+      <div className="flex justify-between items-center border-b pb-4">
+        <h1 className="text-2xl font-bold text-gray-900">Hey, {user.name}!</h1>
         <div className="flex gap-2">
-          <Button onClick={open}>Add new note</Button>
-          <Button onClick={() => setIsChatOpen(true)}>Open Chat</Button>
+          <Button variant="outline" onClick={open}>
+            + New Note
+          </Button>
+          <Button onClick={() => setIsChatOpen(true)}>Chat</Button>
+          <Button variant="destructive" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
       </div>
 
-      {/* Notes Grid */}
       {notesLoading ? (
         <div className="space-y-2">
           <Skeleton className="h-24 w-full rounded-xl" />
@@ -90,7 +100,7 @@ export default function ProfilePage() {
         <div
           className={`grid gap-4 ${
             isChatOpen
-              ? "grid-cols-1" // When chat slider open, force 1 column
+              ? "grid-cols-1"
               : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           }`}
         >
@@ -104,20 +114,20 @@ export default function ProfilePage() {
             return (
               <Card
                 key={note.id}
-                className="hover:shadow-lg transition h-full flex flex-col"
+                className="hover:shadow-lg transition rounded-xl border flex flex-col"
               >
                 <CardHeader>
-                  <CardTitle>{note.title}</CardTitle>
+                  <CardTitle className="truncate">{note.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col flex-grow">
-                  <p className="text-sm text-muted-foreground flex-grow">
+                <CardContent className="flex flex-col flex-grow space-y-2">
+                  <p className="text-sm text-gray-600 flex-grow">
                     {isExpanded ? content : preview}
                   </p>
 
                   {content.length > 150 && (
                     <Button
                       variant="link"
-                      className="p-0 h-auto text-blue-500 text-sm"
+                      className="p-0 h-auto text-blue-600 text-sm"
                       onClick={() => toggleExpand(note.id)}
                     >
                       {isExpanded ? "View Less" : "View More"}
@@ -129,28 +139,27 @@ export default function ProfilePage() {
                       href={note.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-blue-500 underline mt-2 inline-block"
+                      className="text-sm text-blue-600 underline"
                     >
                       Visit Link
                     </a>
                   )}
 
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs text-gray-400">
                     {new Date(note.createdAt).toLocaleString()}
                   </p>
 
-                  {/* AI Summary Toggle */}
                   {note.aiSummary && (
-                    <div className="mt-3">
+                    <div className="mt-2">
                       <Button
                         variant="link"
-                        className="p-0 h-auto text-blue-500 text-sm"
+                        className="p-0 h-auto text-blue-600 text-sm"
                         onClick={() => toggleSummary(note.id)}
                       >
                         {showSummary ? "Hide AI Summary" : "View AI Summary"}
                       </Button>
                       {showSummary && (
-                        <div className="mt-2 p-2 border rounded-md bg-gray-50 text-sm">
+                        <div className="mt-2 p-2 border rounded-md bg-gray-100 text-sm">
                           <strong>AI Summary:</strong> {note.aiSummary}
                         </div>
                       )}
@@ -158,8 +167,15 @@ export default function ProfilePage() {
                   )}
                 </CardContent>
 
-                <div className="flex gap-2 p-2">
-                  <Button>View</Button>
+                <div className="flex gap-2 p-2 border-t">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      alert("Coming soon...");
+                    }}
+                  >
+                    View
+                  </Button>
                   <Button
                     onClick={() => handleAISummary(note.id)}
                     disabled={loadingSummaryId === note.id}
@@ -177,11 +193,10 @@ export default function ProfilePage() {
 
       <NewNoteModal />
 
-      {/* Chat Slider */}
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <SheetContent>
+        <SheetContent className="w-full sm:max-w-md">
           <SheetHeader>
-            <SheetTitle>Chat</SheetTitle>
+            <SheetTitle>Chat Assistant</SheetTitle>
           </SheetHeader>
           <div className="p-4 h-full">
             <ChatPanel />
