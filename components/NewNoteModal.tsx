@@ -39,14 +39,13 @@ export default function NewNoteModal() {
         link,
         userId: user.id,
       });
-
-      // update store without reload
       addNote(res.data);
 
       close();
       setTitle("");
       setContent("");
       setLink("");
+      window.location.reload();
     } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.message || "Failed to add note");
