@@ -17,6 +17,11 @@ import { useNotesStore } from "@/store/useNotesStore";
 import ChatPanel from "@/components/ChatPanel";
 import { useRouter } from "next/navigation";
 
+// icons
+import { FiLink } from "react-icons/fi";
+import { LuClock4 } from "react-icons/lu";
+import { MdOutlineSummarize } from "react-icons/md";
+
 export default function ProfilePage() {
   const { user, isLoggedIn, loading, logout } = useAuthStore();
   const { open } = useNewNotesModalStore();
@@ -75,20 +80,17 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-white min-h-screen text-gray-900">
       <div className="flex justify-between items-center border-b pb-4">
-        <h1 className="text-2xl font-bold text-gray-900">Hey, {user.name}!</h1>
+        <h1 className="text-xl  font-bold">Hey, {user.name}!</h1>
         <div className="flex gap-2">
           <Button variant="outline" onClick={open}>
             + New Note
           </Button>
           <Button onClick={() => setIsChatOpen(true)}>Chat</Button>
-          <Button variant="destructive" onClick={handleLogout}>
-            Logout
-          </Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
-
       {notesLoading ? (
         <div className="space-y-2">
           <Skeleton className="h-24 w-full rounded-xl" />
@@ -114,20 +116,22 @@ export default function ProfilePage() {
             return (
               <Card
                 key={note.id}
-                className="hover:shadow-lg transition rounded-xl border flex flex-col"
+                className="rounded-xl border bg-white transition flex flex-col"
               >
                 <CardHeader>
-                  <CardTitle className="truncate">{note.title}</CardTitle>
+                  <CardTitle className="truncate text-lg font-semibold text-gray-800">
+                    {note.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col flex-grow space-y-2">
-                  <p className="text-sm text-gray-600 flex-grow">
+                  <p className="text-sm text-gray-700 flex-grow">
                     {isExpanded ? content : preview}
                   </p>
 
                   {content.length > 150 && (
                     <Button
                       variant="link"
-                      className="p-0 h-auto text-blue-600 text-sm"
+                      className="p-0 h-auto text-gray-500 text-xs"
                       onClick={() => toggleExpand(note.id)}
                     >
                       {isExpanded ? "View Less" : "View More"}
@@ -139,13 +143,14 @@ export default function ProfilePage() {
                       href={note.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-blue-600 underline"
+                      className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm"
                     >
-                      Visit Link
+                      <FiLink className="w-4 h-4" /> Link
                     </a>
                   )}
 
-                  <p className="text-xs text-gray-400">
+                  <p className="flex items-center gap-1 text-xs text-gray-400">
+                    <LuClock4 className="w-3 h-3" />
                     {new Date(note.createdAt).toLocaleString()}
                   </p>
 
@@ -153,14 +158,15 @@ export default function ProfilePage() {
                     <div className="mt-2">
                       <Button
                         variant="link"
-                        className="p-0 h-auto text-blue-600 text-sm"
+                        className="p-0 h-auto text-gray-500 text-xs flex items-center gap-1"
                         onClick={() => toggleSummary(note.id)}
                       >
-                        {showSummary ? "Hide AI Summary" : "View AI Summary"}
+                        <MdOutlineSummarize className="w-4 h-4" />
+                        {showSummary ? "Hide Summary" : "View Summary"}
                       </Button>
                       {showSummary && (
-                        <div className="mt-2 p-2 border rounded-md bg-gray-100 text-sm">
-                          <strong>AI Summary:</strong> {note.aiSummary}
+                        <div className="mt-2 p-2 border rounded-md bg-gray-100 text-sm text-gray-700">
+                          {note.aiSummary}
                         </div>
                       )}
                     </div>
@@ -169,16 +175,9 @@ export default function ProfilePage() {
 
                 <div className="flex gap-2 p-2 border-t">
                   <Button
-                    variant="secondary"
-                    onClick={() => {
-                      alert("Coming soon...");
-                    }}
-                  >
-                    View
-                  </Button>
-                  <Button
                     onClick={() => handleAISummary(note.id)}
                     disabled={loadingSummaryId === note.id}
+                    className="flex-1 bg-gray-800 text-white "
                   >
                     {loadingSummaryId === note.id
                       ? "Generating..."
@@ -190,7 +189,6 @@ export default function ProfilePage() {
           })}
         </div>
       )}
-
       <NewNoteModal />
 
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>

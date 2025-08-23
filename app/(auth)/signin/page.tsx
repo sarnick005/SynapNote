@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FiHome } from "react-icons/fi";
 
 export default function SigninPage() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -77,6 +78,14 @@ export default function SigninPage() {
               Signup
             </span>
           </p>
+          <Button
+            onClick={() => router.push("/")}
+            variant="outline"
+            className="mt-6 flex items-center gap-2"
+          >
+            <FiHome className="text-lg" />
+            Back to Home
+          </Button>
         </motion.div>
       </div>
     </div>
