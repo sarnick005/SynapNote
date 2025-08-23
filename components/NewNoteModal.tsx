@@ -32,6 +32,11 @@ export default function NewNoteModal() {
     e.preventDefault();
     if (!user?.id) return alert("User not found!");
 
+    if (title.length > 100)
+      return alert("Title must be at most 100 characters.");
+    if (content.length > 500)
+      return alert("Content must be at most 500 characters.");
+
     try {
       const res = await axios.post("/api/notes", {
         title,
@@ -68,11 +73,13 @@ export default function NewNoteModal() {
             <Input
               id="title"
               name="title"
-              placeholder="Enter note title"
+              placeholder="Enter note title (max 100 characters)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              maxLength={100}
               required
             />
+            <p className="text-xs text-gray-500">{title.length}/100</p>
           </div>
 
           <div className="grid gap-3">
@@ -80,11 +87,13 @@ export default function NewNoteModal() {
             <Textarea
               id="content"
               name="content"
-              placeholder="Write your note here..."
+              placeholder="Write your note here... (max 500 characters)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              maxLength={500}
               required
             />
+            <p className="text-xs text-gray-500">{content.length}/500</p>
           </div>
 
           <div className="grid gap-3">

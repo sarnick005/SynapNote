@@ -102,20 +102,24 @@ export default function ChatPanel() {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t flex gap-2">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          className="flex-1 border-gray-300 focus:ring-gray-500"
-        />
-        <Button
-          onClick={handleSend}
-          className="bg-gray-900 text-white hover:bg-gray-700 rounded-xl px-4"
-        >
-          <SendHorizonal size={18} />
-        </Button>
+      <div className="p-4 border-t flex flex-col gap-2">
+        <div className="flex gap-2">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            maxLength={250}
+            className="flex-1 border-gray-300 focus:ring-gray-500"
+          />
+          <Button
+            onClick={handleSend}
+            className="bg-gray-900 text-white hover:bg-gray-700 rounded-xl px-4"
+          >
+            <SendHorizonal size={18} />
+          </Button>
+        </div>
+        <p className="text-xs text-gray-400 text-right">{input.length}/250</p>
       </div>
     </div>
   );

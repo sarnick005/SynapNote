@@ -23,13 +23,25 @@ export default function DocsPage() {
           >
             How to use
           </motion.h1>
-          <motion.div whileHover={{ scale: 1.05 }}>
+          <motion.div
+            className="flex flex-row gap-3"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <Button
-              variant="ghost"
+              variant="outline"
+              className="border-gray-400 text-gray-700 hover:bg-gray-100 px-6 py-2"
               onClick={() => router.push("/")}
-              className="flex items-center gap-2 text-black hover:bg-gray-100"
             >
               Home
+            </Button>
+            <Button
+              variant="outline"
+              className="border-gray-400 text-gray-700 hover:bg-gray-100 px-6 py-2"
+              onClick={() => router.push("/signin")}
+            >
+              Signin
             </Button>
           </motion.div>
         </div>
