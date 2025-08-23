@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="font-nunito">
         <ClientProvider>{children}</ClientProvider>
       </body>
     </html>
