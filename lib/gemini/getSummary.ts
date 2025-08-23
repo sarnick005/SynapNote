@@ -1,0 +1,46 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const API_KEYS = process.env.GEMINI_API_KEYS?.split(",") || [];
+
+if (API_KEYS.length === 0) {
+  throw new Error("No API keys found. Please set GEMINI_API_KEYS in .env");
+}
+
+let keyIndex = 0;
+function getNextKey(): string {
+  const key = API_KEYS[keyIndex].trim();
+  keyIndex = (keyIndex + 1) % API_KEYS.length;
+  return key;
+}
+
+export async function generateSummary(
+  title: string,
+  content: string
+): Promise<string> {
+  const prompt = `
+Here is some data: { "title": "${title}", "content": "${content}" }
+
+Question: can you generate a 2 line brief summary for this?
+`;
+
+  let lastError: unknown;
+
+  for (let i = 0; i < API_KEYS.length; i++) {
+    const apiKey = getNextKey();
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      return result.response.text(); // ✅ success
+    } catch (error) {
+      console.error(`Key failed [${apiKey.slice(0, 6)}...]:`, error);
+      lastError = error;
+      // try next key
+    }
+  }
+
+  throw new Error(
+    "All API keys failed. Last error: " + (lastError as Error).message
+  );
+}

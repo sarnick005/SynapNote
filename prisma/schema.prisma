@@ -15,8 +15,8 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  notes         Note[]
-  conversations Conversation[]
+  notes     Note[]
+  responses Response[]
 }
 
 model Note {
@@ -36,20 +36,11 @@ model Note {
   isPublic Boolean @default(false)
 }
 
-model Conversation {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-
-  userId    String
-  user      User       @relation(fields: [userId], references: [id])
-  responses Response[]
-}
-
 model Response {
-  id             String       @id @default(uuid())
-  prompt         String
-  response       String
-  createdAt      DateTime     @default(now())
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  prompt    String
+  response  String
+  createdAt DateTime @default(now())
 }
