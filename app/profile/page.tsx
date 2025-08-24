@@ -16,8 +16,6 @@ import { useNewNotesModalStore } from "@/store/useModalStore";
 import { useNotesStore } from "@/store/useNotesStore";
 import ChatPanel from "@/components/ChatPanel";
 import { useRouter } from "next/navigation";
-
-// icons
 import { FiLink } from "react-icons/fi";
 import { LuClock4 } from "react-icons/lu";
 import { MdOutlineSummarize } from "react-icons/md";
@@ -37,6 +35,11 @@ export default function ProfilePage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const router = useRouter();
+  useEffect(() => {
+    if (!loading && (!isLoggedIn || !user)) {
+      router.replace("/signin");
+    }
+  }, [loading, isLoggedIn, user, router]);
 
   useEffect(() => {
     if (user?.id) getNotes();
@@ -99,13 +102,7 @@ export default function ProfilePage() {
       ) : notes.length === 0 ? (
         <p className="text-muted-foreground">No notes yet. Create one!</p>
       ) : (
-        <div
-          className={`grid gap-4 ${
-            isChatOpen
-              ? "grid-cols-1"
-              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          }`}
-        >
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {notes.map((note) => {
             const isExpanded = expandedNotes[note.id];
             const showSummary = visibleSummaries[note.id];
@@ -196,7 +193,7 @@ export default function ProfilePage() {
           <SheetHeader>
             <SheetTitle>Chat Assistant</SheetTitle>
           </SheetHeader>
-          <div className="p-4 h-full">
+          <div className="px-4 pb-16 h-full">
             <ChatPanel />
           </div>
         </SheetContent>

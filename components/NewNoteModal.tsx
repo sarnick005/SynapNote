@@ -59,7 +59,7 @@ export default function NewNoteModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] w-[95vw] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader>
             <DialogTitle>Add a New Note</DialogTitle>
