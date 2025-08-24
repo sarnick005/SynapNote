@@ -18,6 +18,7 @@ import { useNewNotesModalStore } from "@/store/useModalStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNotesStore } from "@/store/useNotesStore";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function NewNoteModal() {
   const { isOpen, close } = useNewNotesModalStore();
@@ -27,17 +28,27 @@ export default function NewNoteModal() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [link, setLink] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.id) return alert("User not found!");
+    if (!user?.id) {
+      toast.error("User not found!");
+      return;
+    }
 
-    if (title.length > 100)
-      return alert("Title must be at most 100 characters.");
-    if (content.length > 500)
-      return alert("Content must be at most 500 characters.");
+    if (title.length > 100) {
+      toast.warning("Title must be at most 100 characters.");
+      return;
+    }
+
+    if (content.length > 500) {
+      toast.warning("Content must be at most 500 characters.");
+      return;
+    }
 
     try {
+      setLoading(true);
       const res = await axios.post("/api/notes", {
         title,
         content,
@@ -50,10 +61,13 @@ export default function NewNoteModal() {
       setTitle("");
       setContent("");
       setLink("");
-      window.location.reload();
+
+      toast.success("Note added successfully!");
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to add note");
+      toast.error(err.response?.data?.message || "Failed to add note");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,11 +123,18 @@ export default function NewNoteModal() {
 
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button type="button" variant="outline" onClick={close}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={close}
+                disabled={loading}
+              >
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Save Note</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : "Save Note"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

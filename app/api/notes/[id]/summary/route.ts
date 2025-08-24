@@ -4,10 +4,10 @@ import prismaClient from "@/lib/db";
 
 export async function POST(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> } // 👈 mark params as Promise
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // 👈 await params here
+    const { id } = await context.params;
 
     const note = await prismaClient.note.findUnique({
       where: { id },

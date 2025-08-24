@@ -21,16 +21,16 @@ export default function DocsPage() {
             transition={{ duration: 0.6 }}
             className="text-2xl font-bold text-black"
           >
-            How to use
+            SynapNote
           </motion.h1>
           <motion.div
-            className="flex flex-row gap-3"
+            className="flex flex-row  sm:gap-3"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <Button
-              variant="outline"
+              variant="ghost"
               className="border-gray-400 text-gray-700 hover:bg-gray-100 px-6 py-2"
               onClick={() => router.push("/")}
             >
@@ -46,17 +46,22 @@ export default function DocsPage() {
           </motion.div>
         </div>
       </header>
-      <main className="flex-grow max-w-4xl mx-auto px-6 py-12">
+      <main className="flex-grow max-w-4xl mx-auto px-6 py-6">
         <div className="space-y-1">
           <motion.div
             className="text-center space-y-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+          ></motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-bold text-black text-center mb-4"
           >
-            {/* <h2 className="text-4xl font-bold text-black">User Guide</h2> */}
-          </motion.div>
-
+            How to use
+          </motion.h1>
           <div className="space-y-8">
             {[
               {
@@ -68,7 +73,7 @@ export default function DocsPage() {
                 desc: (
                   <>
                     <p className="text-gray-700 mb-4">
-                      Once signed in, start building your knowledge base:
+                      Once signed in, start building your knowledge base
                     </p>
                     <ul className="space-y-2 text-gray-600">
                       <li>• Add new notes with your content</li>
@@ -94,7 +99,7 @@ export default function DocsPage() {
                 desc: (
                   <>
                     <p className="text-gray-700 mb-4">
-                      Interact with your knowledge base using AI:
+                      Interact with your knowledge base using AI
                     </p>
                     <ul className="space-y-2 text-gray-600">
                       <li>
@@ -129,7 +134,6 @@ export default function DocsPage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="mt-auto py-6 border-t border-gray-200">
         <motion.div
           className="max-w-4xl mx-auto px-6 text-center"

@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FiHome } from "react-icons/fi"; // Home icon
+import { FiHome } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function SignupPage() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -27,9 +28,10 @@ export default function SignupPage() {
       const { user, accessToken } = response.data;
       login(user, accessToken);
       router.push("/profile");
+      toast.success("Signed up successfully!");
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || "Signup failed");
+      toast.error(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -53,9 +55,9 @@ export default function SignupPage() {
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex-1 flex flex-col justify-center p-8 md:p-12 bg-white"
+          className="flex-1 flex flex-col justify-center p-6 md:p-12  mt-[-30px] md:mt-0 z-[9999]"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
             Create Account
           </h1>
           <div className="flex flex-col space-y-4">

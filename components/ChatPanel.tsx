@@ -97,16 +97,12 @@ export default function ChatPanel() {
 
   return (
     <div className="flex flex-col h-full border rounded-xl shadow-sm bg-white">
-      {/* Header */}
       <div className="p-4 border-b font-semibold text-lg text-gray-700 flex items-center gap-2">
         <Bot size={20} className="text-gray-500" />
         Chat
       </div>
-
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {loading ? (
-          // Skeleton loading effect
           <div className="space-y-3">
             <div className="flex items-start gap-2">
               <Skeleton className="h-8 w-8 rounded-full" />
@@ -151,8 +147,6 @@ export default function ChatPanel() {
         )}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input */}
       <div className="p-4 border-t flex flex-col gap-2">
         <div className="flex gap-2">
           <Input

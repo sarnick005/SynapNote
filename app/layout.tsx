@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientProvider from "@/providers/ClientProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Second Brain",
@@ -15,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-nunito">
-        <ClientProvider>{children}</ClientProvider>
+        <ClientProvider>
+          {children}
+          <ToastContainer position="top-right" autoClose={3000} />
+        </ClientProvider>
       </body>
     </html>
   );

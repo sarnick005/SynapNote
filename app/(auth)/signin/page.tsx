@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FiHome } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function SigninPage() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -25,17 +26,18 @@ export default function SigninPage() {
 
       const { user, accessToken } = response.data;
       login(user, accessToken);
+
       router.push("/profile");
+      toast.success("Signed in successfully!");
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.message || "Signin failed");
+      toast.error(err.response?.data?.message || "Signin failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="flex w-full max-w-5xl shadow-lg rounded-xl overflow-hidden">
-        {/* Left Image */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -43,20 +45,19 @@ export default function SigninPage() {
           className="hidden md:flex flex-1 relative"
         >
           <img
-            src="https://plus.unsplash.com/premium_photo-1725290965609-c555ccc87e00?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://plus.unsplash.com/premium_photo-1725290965609-c555ccc87e00?q=80&w=1074&auto=format&fit=crop"
             alt="Signin Illustration"
             className="object-cover"
           />
         </motion.div>
 
-        {/* Right Form */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex-1 flex flex-col justify-center p-8 md:p-12 bg-white"
+          className="flex-1 flex flex-col justify-center p-6 md:p-12  mt-[-30px] md:mt-0 z-[9999]"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
             Welcome Back
           </h1>
           <div className="flex flex-col space-y-4">
