@@ -19,7 +19,19 @@ export default function RootLayout({
       <body className="font-nunito">
         <ClientProvider>
           {children}
-          <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            className="toast-container-mobile"
+            toastClassName="toast-mobile"
+          />
         </ClientProvider>
       </body>
     </html>
