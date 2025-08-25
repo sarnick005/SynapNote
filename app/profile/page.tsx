@@ -5,18 +5,17 @@ import { motion } from "framer-motion";
 import NewNoteModal from "@/components/NewNoteModal";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Sheet,
-  SheetContent,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNewNotesModalStore } from "@/store/useModalStore";
 import { useNotesStore } from "@/store/useNotesStore";
 import ChatPanel from "@/components/ChatPanel";
 import { useRouter } from "next/navigation";
+
 import ProfileDesktopMenu from "@/components/ProfileDesktopMenu";
 import ProfileMobileMenu from "@/components/ProfileMobileMenu";
 import RenderNotes from "@/components/RenderNotes";
+import EditNoteModal from "@/components/EditNoteModal";
 
 export default function ProfilePage() {
   const { user, isLoggedIn, loading, logout } = useAuthStore();
@@ -24,6 +23,9 @@ export default function ProfilePage() {
   const { notes, loading: notesLoading, getNotes } = useNotesStore();
 
   const [loadingSummaryId, setLoadingSummaryId] = useState<string | null>(null);
+  const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+
   const [expandedNotes, setExpandedNotes] = useState<Record<string, boolean>>(
     {}
   );
@@ -92,8 +94,6 @@ export default function ProfilePage() {
         >
           SynapNote
         </motion.h1>
-
-        {/* Desktop view */}
         <ProfileDesktopMenu
           user={user}
           openNewNote={open}
@@ -132,8 +132,6 @@ export default function ProfilePage() {
         onChatOpen={() => setIsChatOpen(true)}
         onLogout={handleLogout}
       />
-
-      {/* Notes grid */}
       {notesLoading ? (
         <div className="space-y-2">
           <Skeleton className="h-24 w-full rounded-xl" />
@@ -151,12 +149,15 @@ export default function ProfilePage() {
           toggleSummary={toggleSummary}
           handleAISummary={handleAISummary}
           loadingSummaryId={loadingSummaryId}
+          // deletingNoteId={deletingNoteId}
+          // setDeletingNoteId={setDeletingNoteId}
+          // editingNoteId={editingNoteId}
+          // setEditingNoteId={setEditingNoteId}
         />
       )}
 
       <NewNoteModal />
-
-      {/* Chat Sheet */}
+      <EditNoteModal />
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
         <SheetContent className="w-full sm:max-w-md">
           <div className="px-4 pb-16 h-full">

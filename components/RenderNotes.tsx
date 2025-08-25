@@ -1,10 +1,15 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FiLink } from "react-icons/fi";
 import { LuClock4 } from "react-icons/lu";
 import { MdOutlineSummarize } from "react-icons/md";
+import { AiOutlineDelete } from "react-icons/ai";
+import { FaRegEdit } from "react-icons/fa";
+import { IoBookOutline } from "react-icons/io5";
+import { useNotesStore } from "@/store/useNotesStore";
+import { useEditNoteModalStore } from "@/store/useModalStore";
+import { toast } from "react-toastify";
 
 type Note = {
   id: string;
@@ -34,6 +39,26 @@ export default function RenderNotes({
   handleAISummary,
   loadingSummaryId,
 }: RenderNotesProps) {
+  const { deleteNote, deletingNoteId, setDeletingNoteId } = useNotesStore();
+  const { open: openEditModal } = useEditNoteModalStore();
+
+  async function handleDeleteNote(id: string) {
+    try {
+      setDeletingNoteId(id);
+      await deleteNote(id);
+      toast.success("Note deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete note");
+    } finally {
+      setDeletingNoteId(null);
+    }
+  }
+
+  function handleEditNote(note: Note) {
+    openEditModal(note);
+  }
+
   return (
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
       {notes.map((note) => {
@@ -46,23 +71,23 @@ export default function RenderNotes({
         return (
           <Card
             key={note.id}
-            className="rounded-xl border bg-white transition flex flex-col"
+            className="rounded-xl border bg-white transition flex flex-col hover:shadow-lg"
           >
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-800">
+              <CardTitle className="text-lg font-semibold text-gray-800 line-clamp-2">
                 {note.title}
               </CardTitle>
             </CardHeader>
 
             <CardContent className="flex flex-col flex-grow space-y-2 -mt-4">
-              <p className="text-sm text-gray-700 flex-grow">
+              <p className="text-sm text-gray-700 flex-grow whitespace-pre-wrap">
                 {isExpanded ? content : preview}
               </p>
 
               {content.length > 150 && (
                 <Button
                   variant="link"
-                  className="p-0 h-auto text-gray-500 text-xs"
+                  className="p-0 h-auto text-gray-500 text-xs self-start"
                   onClick={() => toggleExpand(note.id)}
                 >
                   {isExpanded ? "View Less" : "View More"}
@@ -74,9 +99,9 @@ export default function RenderNotes({
                   href={note.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm"
+                  className="flex items-center gap-1 underline text-sm transition-colors"
                 >
-                  <FiLink className="w-4 h-4" /> Link
+                  <FiLink className="w-4 h-4" /> View Link
                 </a>
               )}
 
@@ -86,30 +111,54 @@ export default function RenderNotes({
               </p>
 
               {note.aiSummary && (
-                <div className="mt-2 ">
+                <div className="mt-2">
                   <Button
                     variant="link"
                     className="p-0 h-auto text-gray-500 text-xs flex items-center gap-1"
                     onClick={() => toggleSummary(note.id)}
                   >
-                    <MdOutlineSummarize className="w-4 h-4 -ml-3" />
+                    <MdOutlineSummarize className="w-4 h-4" />
                     {showSummary ? "Hide Summary" : "View Summary"}
                   </Button>
                   {showSummary && (
-                    <div className="mt-2 p-2 border rounded-md bg-gray-50 text-sm text-gray-700">
-                      <i> {note.aiSummary}</i>
+                    <div className="mt-2 p-3 border rounded-md bg-blue-50 text-sm text-gray-700">
+                      <p className="italic">{note.aiSummary}</p>
                     </div>
                   )}
                 </div>
               )}
             </CardContent>
 
-            <div className="flex gap-2 p-2 border-t">
+            <div className="flex gap-2 p-3 border-t bg-gray-50">
+              <Button
+                onClick={() => handleDeleteNote(note.id)}
+                disabled={deletingNoteId === note.id}
+                variant="outline"
+                size="sm"
+                className="flex-1 border-black "
+              >
+                <AiOutlineDelete className="w-4 h-4 mr-1" />
+                {deletingNoteId === note.id ? "Deleting..." : "Delete"}
+              </Button>
+
+              <Button
+                onClick={() => handleEditNote(note)}
+                variant="outline"
+                size="sm"
+                className="flex-1 border-black"
+              >
+                <FaRegEdit className="w-4 h-4 mr-1" />
+                Edit
+              </Button>
+
               <Button
                 onClick={() => handleAISummary(note.id)}
                 disabled={loadingSummaryId === note.id}
-                className="flex-1 bg-gray-900 text-white "
+                variant="outline"
+                size="sm"
+                className="flex-1 border-black"
               >
+                <IoBookOutline className="w-4 h-4 mr-1" />
                 {loadingSummaryId === note.id ? "Generating..." : "AI Summary"}
               </Button>
             </div>

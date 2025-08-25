@@ -8,7 +8,10 @@ export async function GET(
   try {
     const { id } = await context.params;
     const notes = await prismaClient.note.findMany({
-      where: { userId: id },
+      where: {
+        userId: id,
+        isActive: true, 
+      },
       orderBy: { createdAt: "desc" },
     });
 

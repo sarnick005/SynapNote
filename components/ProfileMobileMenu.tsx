@@ -7,6 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { MessageCircle } from "lucide-react";
 import { IoMdAdd } from "react-icons/io";
 import { IoIosLogOut } from "react-icons/io";
 
@@ -58,19 +59,22 @@ export default function ProfileMobileMenu({
 
             <Button
               variant="outline"
-              className="justify-start h-12 rounded-xl shadow-sm"
+              className="justify-start h-12 rounded-xl shadow-sm border-black"
               onClick={() => {
                 onChatOpen();
                 setIsOpen(false);
               }}
             >
-              <span className="mr-3">💬</span>
+              <span className="mr-3">
+                {" "}
+                <MessageCircle className="w-4 h-4 mr-2" />
+              </span>
               Chat
             </Button>
 
             <Button
               variant="outline"
-              className="justify-start h-12 text-red-600 border-red-300 hover:bg-red-50 rounded-xl shadow-sm"
+              className="justify-start h-12 border-black rounded-xl shadow-sm"
               onClick={() => {
                 onLogout();
                 setIsOpen(false);
