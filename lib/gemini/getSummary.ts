@@ -19,9 +19,13 @@ export async function generateSummary(
   content: string
 ): Promise<string> {
   const prompt = `
-Here is some data: { "title": "${title}", "content": "${content}" }
+You are a helpful assistant. 
+Summarize the following content into exactly 2 sentences. 
+Do not include any introductions, labels, or markdown. 
+Only return the 2-line summary as plain text.
 
-Question: can you generate a 2 line brief summary for this?
+Title: ${title}
+Content: ${content}
 `;
 
   let lastError: unknown;

@@ -3,10 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { FaGlobe, FaHome, FaLinkedin } from "react-icons/fa";
-import { FiMail } from "react-icons/fi";
-import { SiGithub } from "react-icons/si";
-import { BsTwitterX } from "react-icons/bs";
+import Footer from "@/components/Footer";
 
 export default function DocsPage() {
   const router = useRouter();
@@ -134,53 +131,8 @@ export default function DocsPage() {
         </div>
       </main>
 
-      <footer className="mt-auto py-6 border-t border-gray-200">
-        <motion.div
-          className="max-w-4xl mx-auto px-6 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          <p className="text-sm text-gray-500 mb-4">
-            © {new Date().getFullYear()} SynapNote by Sarnick Chakraborty
-          </p>
-          <div className="flex justify-center gap-6">
-            {[
-              {
-                href: "https://x.com/Sarnick_Ch",
-                icon: <BsTwitterX className="w-5 h-5" />,
-              },
-              {
-                href: "https://github.com/sarnick005",
-                icon: <SiGithub className="w-5 h-5" />,
-              },
-              {
-                href: "https://www.linkedin.com/in/sarnick-chakraborty-16828423a/",
-                icon: <FaLinkedin className="w-5 h-5" />,
-              },
-              {
-                href: "https://sarnick.vercel.app",
-                icon: <FaGlobe className="w-5 h-5" />,
-              },
-              {
-                href: "mailto:your@email.com",
-                icon: <FiMail className="w-5 h-5" />,
-              },
-            ].map((link, idx) => (
-              <motion.a
-                key={idx}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-black transition"
-                whileHover={{ scale: 1.2, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {link.icon}
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
+      <footer>
+        <Footer />
       </footer>
     </div>
   );

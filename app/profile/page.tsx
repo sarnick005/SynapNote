@@ -1,24 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import NewNoteModal from "@/components/NewNoteModal";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNewNotesModalStore } from "@/store/useModalStore";
 import { useNotesStore } from "@/store/useNotesStore";
 import ChatPanel from "@/components/ChatPanel";
 import { useRouter } from "next/navigation";
-import { FiLink } from "react-icons/fi";
-import { LuClock4 } from "react-icons/lu";
-import { MdOutlineSummarize } from "react-icons/md";
+import ProfileDesktopMenu from "@/components/ProfileDesktopMenu";
+import ProfileMobileMenu from "@/components/ProfileMobileMenu";
+import RenderNotes from "@/components/RenderNotes";
 
 export default function ProfilePage() {
   const { user, isLoggedIn, loading, logout } = useAuthStore();
@@ -33,6 +31,7 @@ export default function ProfilePage() {
     Record<string, boolean>
   >({});
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const router = useRouter();
   useEffect(() => {
@@ -84,16 +83,57 @@ export default function ProfilePage() {
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen text-gray-900">
-      <div className="flex justify-between items-center border-b pb-4">
-        <h1 className="text-xl  font-bold">Hey, {user.name}!</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={open}>
-            + New Note
+      <div className="flex justify-between items-center border-b pb-4 mb-6">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-2xl font-bold text-black"
+        >
+          SynapNote
+        </motion.h1>
+
+        {/* Desktop view */}
+        <ProfileDesktopMenu
+          user={user}
+          openNewNote={open}
+          onChatOpen={() => setIsChatOpen(true)}
+          onLogout={handleLogout}
+        />
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="p-2"
+          >
+            <svg
+              className="h-10 w-10"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </Button>
-          <Button onClick={() => setIsChatOpen(true)}>Chat</Button>
-          <Button onClick={handleLogout}>Logout</Button>
         </div>
       </div>
+      <ProfileMobileMenu
+        isOpen={isMobileMenuOpen}
+        setIsOpen={setIsMobileMenuOpen}
+        user={user}
+        openNewNote={open}
+        onChatOpen={() => setIsChatOpen(true)}
+        onLogout={handleLogout}
+      />
+
+      {/* Notes grid */}
       {notesLoading ? (
         <div className="space-y-2">
           <Skeleton className="h-24 w-full rounded-xl" />
@@ -102,97 +142,23 @@ export default function ProfilePage() {
       ) : notes.length === 0 ? (
         <p className="text-muted-foreground">No notes yet. Create one!</p>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {notes.map((note) => {
-            const isExpanded = expandedNotes[note.id];
-            const showSummary = visibleSummaries[note.id];
-            const content = note.content || "";
-            const preview =
-              content.length > 150 ? content.slice(0, 150) + "..." : content;
-
-            return (
-              <Card
-                key={note.id}
-                className="rounded-xl border bg-white transition flex flex-col"
-              >
-                <CardHeader>
-                  <CardTitle className="truncate text-lg font-semibold text-gray-800">
-                    {note.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col flex-grow space-y-2">
-                  <p className="text-sm text-gray-700 flex-grow">
-                    {isExpanded ? content : preview}
-                  </p>
-
-                  {content.length > 150 && (
-                    <Button
-                      variant="link"
-                      className="p-0 h-auto text-gray-500 text-xs"
-                      onClick={() => toggleExpand(note.id)}
-                    >
-                      {isExpanded ? "View Less" : "View More"}
-                    </Button>
-                  )}
-
-                  {note.link && (
-                    <a
-                      href={note.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm"
-                    >
-                      <FiLink className="w-4 h-4" /> Link
-                    </a>
-                  )}
-
-                  <p className="flex items-center gap-1 text-xs text-gray-400">
-                    <LuClock4 className="w-3 h-3" />
-                    {new Date(note.createdAt).toLocaleString()}
-                  </p>
-
-                  {note.aiSummary && (
-                    <div className="mt-2">
-                      <Button
-                        variant="link"
-                        className="p-0 h-auto text-gray-500 text-xs flex items-center gap-1"
-                        onClick={() => toggleSummary(note.id)}
-                      >
-                        <MdOutlineSummarize className="w-4 h-4" />
-                        {showSummary ? "Hide Summary" : "View Summary"}
-                      </Button>
-                      {showSummary && (
-                        <div className="mt-2 p-2 border rounded-md bg-gray-100 text-sm text-gray-700">
-                          {note.aiSummary}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-
-                <div className="flex gap-2 p-2 border-t">
-                  <Button
-                    onClick={() => handleAISummary(note.id)}
-                    disabled={loadingSummaryId === note.id}
-                    className="flex-1 bg-gray-800 text-white "
-                  >
-                    {loadingSummaryId === note.id
-                      ? "Generating..."
-                      : "AI Summary"}
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+        // rendering all notes
+        <RenderNotes
+          notes={notes}
+          expandedNotes={expandedNotes}
+          visibleSummaries={visibleSummaries}
+          toggleExpand={toggleExpand}
+          toggleSummary={toggleSummary}
+          handleAISummary={handleAISummary}
+          loadingSummaryId={loadingSummaryId}
+        />
       )}
+
       <NewNoteModal />
 
+      {/* Chat Sheet */}
       <Sheet open={isChatOpen} onOpenChange={setIsChatOpen}>
         <SheetContent className="w-full sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>Chat Assistant</SheetTitle>
-          </SheetHeader>
           <div className="px-4 pb-16 h-full">
             <ChatPanel />
           </div>

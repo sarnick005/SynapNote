@@ -37,13 +37,13 @@ export default function NewNoteModal() {
       return;
     }
 
-    if (title.length > 100) {
-      toast.warning("Title must be at most 100 characters.");
+    if (title.length > 150) {
+      toast.warning("Title must be at most 150 characters.");
       return;
     }
 
-    if (content.length > 500) {
-      toast.warning("Content must be at most 500 characters.");
+    if (content.length > 1000) {
+      toast.warning("Content must be at most 1000 characters.");
       return;
     }
 
@@ -61,7 +61,7 @@ export default function NewNoteModal() {
       setTitle("");
       setContent("");
       setLink("");
-
+      window.location.reload();
       toast.success("Note added successfully!");
     } catch (err: any) {
       console.error(err);
@@ -87,13 +87,13 @@ export default function NewNoteModal() {
             <Input
               id="title"
               name="title"
-              placeholder="Enter note title (max 100 characters)"
+              placeholder="Enter note title (max 150 characters)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              maxLength={100}
+              maxLength={150}
               required
             />
-            <p className="text-xs text-gray-500">{title.length}/100</p>
+            <p className="text-xs text-gray-1000">{title.length}/150</p>
           </div>
 
           <div className="grid gap-3">
@@ -101,13 +101,13 @@ export default function NewNoteModal() {
             <Textarea
               id="content"
               name="content"
-              placeholder="Write your note here... (max 500 characters)"
+              placeholder="Write your note here... (max 1000 characters)"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              maxLength={500}
+              maxLength={1000}
               required
             />
-            <p className="text-xs text-gray-500">{content.length}/500</p>
+            <p className="text-xs text-gray-1000">{content.length}/1000</p>
           </div>
 
           <div className="grid gap-3">

@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNotesStore } from "@/store/useNotesStore";
-import { SendHorizonal, Bot, User } from "lucide-react";
+import { SendHorizonal,  User } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { GiBrain } from "react-icons/gi";
 
 type Message = {
   id: string;
@@ -98,7 +99,7 @@ export default function ChatPanel() {
   return (
     <div className="flex flex-col h-full border rounded-xl shadow-sm bg-white">
       <div className="p-4 border-b font-semibold text-lg text-gray-700 flex items-center gap-2">
-        <Bot size={20} className="text-gray-500" />
+        <GiBrain size={20} className="text-gray-500" />
         Chat
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -127,7 +128,7 @@ export default function ChatPanel() {
               }`}
             >
               {msg.from === "ai" && (
-                <Bot size={18} className="text-gray-400 mt-1" />
+                <GiBrain size={18} className="text-gray-400 mt-1" />
               )}
               <div
                 className={`px-3 py-2 rounded-2xl max-w-[75%] text-sm shadow-sm overflow-auto max-h-52 break-words ${

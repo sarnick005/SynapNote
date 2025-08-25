@@ -3,44 +3,22 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { BsTwitterX } from "react-icons/bs";
-import { FaGlobe, FaLinkedin } from "react-icons/fa";
-import { SiGithub } from "react-icons/si";
-import { FiMail } from "react-icons/fi";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 export default function Home() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
-      <header className="w-full py-6 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto flex justify-between items-center px-6">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-2xl font-bold text-black"
-          >
-            SynapNote
-          </motion.h1>
-          <motion.div whileHover={{ scale: 1.05 }}>
-            <Button
-              variant="outline"
-              className="border-gray-400 text-gray-700 hover:bg-gray-100 px-6 py-2"
-              onClick={() => router.push("/signin")}
-            >
-              Signin
-            </Button>
-          </motion.div>
-        </div>
-      </header>
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="flex flex-col md:flex-row items-center gap-10 px-6 md:px-16">
+      <Header />
+      <div className="flex-1 flex flex-col items-center justify-center ">
+        <div className="flex flex-col md:flex-row items-center gap-12 px-6 md:px-16">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex-1 space-y-6 text-center md:text-left"
+            className="flex-1 space-y-6 text-center md:text-left sm:-mt-16"
           >
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               Welcome to <span className="text-gray-700">SynapNote</span>
@@ -83,57 +61,7 @@ export default function Home() {
         </div>
       </div>
 
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="mt-auto py-6 text-gray-500 text-sm flex flex-col items-center gap-3 border-t"
-      >
-        <p>
-          © {new Date().getFullYear()} SynapNote by{" "}
-          <span className="font-medium">Sarnick Chakraborty</span>.
-        </p>
-        <div className="flex gap-5">
-          <a
-            href="https://x.com/Sarnick_Ch"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-900 transition"
-          >
-            <BsTwitterX className="w-5 h-5" />
-          </a>
-          <a
-            href="https://github.com/sarnick005"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-900 transition"
-          >
-            <SiGithub className="w-5 h-5" />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/sarnick-chakraborty-16828423a/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-900 transition"
-          >
-            <FaLinkedin className="w-5 h-5" />
-          </a>
-          <a
-            href="https://sarnick.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-900 transition"
-          >
-            <FaGlobe className="w-5 h-5" />
-          </a>
-          <a
-            href="mailto:your@email.com"
-            className="hover:text-gray-900 transition"
-          >
-            <FiMail className="w-5 h-5" />
-          </a>
-        </div>
-      </motion.footer>
+      <Footer />
     </div>
   );
 }
